@@ -1,35 +1,17 @@
-// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-// 1. SIMPLE VAULT
-// This is a basic digital wallet. 
-// It proves I understand mapping, msg.sender, and payable functions.
+contract Vault {
 
-contract SimpleVault {
-    
-    // MAPPING: Keeps track of how much ETH each person owns.
-    // Address = User, uint256 = Balance
     mapping(address => uint256) public balances;
 
-    // DEPOSIT: Put money in
-    // 'payable' allows the contract to accept ETH
     function deposit() public payable {
-        // REQUIRE: Don't allow empty transactions
-        require(msg.value > 0, "Must send ETH");
-
-        // LOGIC: Add amount to sender's balance
         balances[msg.sender] += msg.value;
     }
 
-    // WITHDRAW: Take money out
-    function withdraw(uint256 _amount) public {
-        // CHECK: Do they have enough money?
-        require(balances[msg.sender] >= _amount, "Insufficient funds");
-
-        // UPDATE: Subtract first to prevent hacks
-        balances[msg.sender] -= _amount;
-
-        // TRANSFER: Send ETH back to the user
-        payable(msg.sender).transfer(_amount);
+    function withdraw(uint256 amount) public {
+        require(balances[msg.sender] >= amount, "Not enough funds");
+        balances[msg.sender] -= amount;
+        payable(msg.sender).transfer(amount);
     }
+
 }
